@@ -121,7 +121,7 @@ class MainActivity : AppCompatActivity() {
                 var dataInt = dataString.toInt()
                 //data  處理
                 when (dataInt) {
-                        in 256..65535 -> {
+                        in 501..65535 -> {
                         Toast.makeText(this, "資料值太大了", Toast.LENGTH_SHORT).show()
                     }
                     else -> {
