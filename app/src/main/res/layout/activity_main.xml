@@ -4,9 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-<variable
-    name="data"
-    type="com.example.hc05.MyViewModel" />
+
+        <variable
+            name="data"
+            type="com.example.hc05.MyViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -65,9 +66,10 @@
             android:id="@+id/editTextSetWeight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:digits="1234567890"
             android:ems="10"
             android:hint="輸入重量"
-            android:inputType="textPersonName"
+            android:inputType="phone|number"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

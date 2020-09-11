@@ -114,58 +114,55 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-//
+// bug, 輸人號是字串怎麼辦？ 可以指它它只能輸入數字嗎？
         btnSendWeight.setOnClickListener {
             var dataString = editTextSetWeight.text.toString()
-            if (dataString != "") {
+            if (dataString != "") {                         //判斷空值
                 var dataInt = dataString.toInt()
                 //data  處理
-                when (dataInt) {
-                        in 501..65535 -> {
-                        Toast.makeText(this, "資料值太大了", Toast.LENGTH_SHORT).show()
-                    }
-                    else -> {
-                         data = dataString.toInt().toString(16)   // 裡面是16進制處理
-                        println ("data = $data")
-                        println ("dataString.toInt() = ${dataString.toInt()}")
-                        when (dataString.toInt()) {    //10進制 = 10
-                            in 0..15 -> {
-                                dataString = "00" + "0" + data   //data = 0f
-                            }        //要取4位
-                            in 16..255 -> {
-                                dataString = "00" + data
-                            }            //
-                            in 256..(16 * 16 * 15 + 16 * 15 + 15) -> {
-                                dataString = "0" + data
-                            }  //超過255後處理
-                            else -> {
-                                data = data
-                            }
+                if (dataInt <= 500) {                       //判斷值小於500才執行
+                    data = dataString.toInt().toString(16)   // 裡面是16進制處理
+                    println("data = $data")
+                    println("dataString.toInt() = ${dataString.toInt()}")
+                    when (dataString.toInt()) {    //10進制 = 10
+                        in 0..15 -> {
+                            dataString = "00" + "0" + data   //data = 0f
+                        }        //要取4位
+                        in 16..255 -> {
+                            dataString = "00" + data
+                        }            //
+                        in 256..(16 * 16 * 15 + 16 * 15 + 15) -> {
+                            dataString = "0" + data
+                        }  //超過255後處理
+                        else -> {
+                            data = data
                         }
-                        println("data=$dataString")
-
-                        // check sum  處理  （裡面是10進制處理）  檢查碼：（命令+長度+數值）取最後2byte 再做1's
-                        val dataInt = editTextSetWeight.text.toString().toInt()
-                        val datahi = dataInt / 256                   // 將重量折分為2個數字 hi/lo
-                        val datalo = dataInt % 256
-
-                        val csa = 68 + 2 + datahi + datalo          //把10進制數值全部相加
-                        // 70dec+data      規格內少了前55做運算
-                        println("csa = $csa")
-                        val csb = (65535 - csa).toString(16)      // 取1's （用最大值65535去減）
-                        println("csb=$csb")
-                        val cssize =
-                            csb.length                         // 取數字的長度, (存在bug, lenght 不可小於2,否則會當機）
-                        // 亦輸入的數值為65535 它就當了所以要限制大小
-                        val csc = csb.subSequence(cssize - 2, cssize)         // 已知它的結果
-                        println("csc=$csc")                                //得到它是af
-//範例：55 44 02 00 0A AF 90
-                        myViewModel.dataSend =
-                            "554402" + dataString + csc + "90"  // 送資料了, 它有做檢查碼阿！  (直接傳16進制）就不用管了
-                        println("myViewModel.dataSend = ${myViewModel.dataSend}")
-
-                        myViewModel.isWriteEanbled = true          // 開始送資料
                     }
+                    println("data=$dataString")
+
+                    // check sum  處理  （裡面是10進制處理）  檢查碼：（命令+長度+數值）取最後2byte 再做1's
+                    val dataInt = editTextSetWeight.text.toString().toInt()
+                    val datahi = dataInt / 256                   // 將重量折分為2個數字 hi/lo
+                    val datalo = dataInt % 256
+
+                    val csa = 68 + 2 + datahi + datalo          //把10進制數值全部相加
+                    // 70dec+data      規格內少了前55做運算
+                    println("csa = $csa")
+                    val csb = (65535 - csa).toString(16)      // 取1's （用最大值65535去減）
+                    println("csb=$csb")
+                    val cssize =
+                        csb.length                         // 取數字的長度, (存在bug, lenght 不可小於2,否則會當機）
+                    // 亦輸入的數值為65535 它就當了所以要限制大小
+                    val csc = csb.subSequence(cssize - 2, cssize)         // 已知它的結果
+                    println("csc=$csc")                                //得到它是af
+//範例：55 44 02 00 0A AF 90
+                    myViewModel.dataSend =
+                        "554402" + dataString + csc + "90"  // 送資料了, 它有做檢查碼阿！  (直接傳16進制）就不用管了
+                    println("myViewModel.dataSend = ${myViewModel.dataSend}")
+
+                    myViewModel.isWriteEanbled = true          // 開始送資料
+                } else {
+                    Toast.makeText(this, "資料值太大了", Toast.LENGTH_SHORT).show()
                 }
             } else {
                 Toast.makeText(this, "資料不可為空", Toast.LENGTH_SHORT).show()
